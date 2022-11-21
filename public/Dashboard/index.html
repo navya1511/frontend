@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="https://fire-gym.web.app/src/img/logo.png" />
+    <title>Credit Card Fraud Detection System</title>
+    <script src="https://www.gstatic.com/firebasejs/9.8.2/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.8.2/firebase-auth-compat.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" />
+    <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" defer></script>
+    <script src="../assets/api.js" defer></script>
+    <script src="../assets/firebaseConfig.js" defer></script>
+    <script src="../assets/firebaseFunction2.js" defer></script>
+    <script src="../assets/style.js" defer></script>
+</head>
+
+<body class="h-screen bg-gray-200 dark:bg-gray-900  text-gray-900 dark:text-gray-100">
+    <nav id="home" class="bg-gray-200 border-gray-100 border-gray-200 px-2 sm:px-4 py-2.5  dark:bg-gray-900">
+        <div class="tabs container mx-auto flex flex-wrap items-center justify-between">
+            <a href="/" class="flex">
+                <!--log here-->
+                <span class="self-center text-lg font-semibold whitespace-nowrap 
+                text-black dark:text-gray-200 dark:hover:text-red-900 hover:text-red-500">
+                     Dashboard
+                </span>
+            </a>
+            <div class="flex md:order-2">
+                <!-- Dark mode switcher -->
+                <button id="theme-toggle" type="button"
+                    class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                    <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z">
+                        </path>
+                    </svg>
+                    <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                            fill-rule="evenodd" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                <!-- Dark mode switcher end -->
+                <button data-collapse-toggle="mobile-menu-4" type="button"
+                    class="md:hidden text-gray-500 hover:bg-gray-100focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-lg text-sm p-2 inline-flex items-center dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                    aria-controls="mobile-menu-4" aria-expanded="false">
+                    <span class="sr-only">
+                        Open main menu
+                    </span>
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                            clip-rule="evenodd">
+                        </path>
+                    </svg>
+                    <svg class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div class="hidden md:flex justify-between items-center w-full md:w-auto md:order-1" id="mobile-menu-4">
+                <ul class="flex-col md:flex-row flex md:space-x-8 mt-4 md:mt-0 md:text-sm md:font-medium">
+                    <li>
+                        <a data-target="panel-1"
+                            class="tab cursor-pointer text-lg font-semibold whitespace-nowrap text-gray-900 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-red-500 md:p-0 md:dark:hover:text-red-500 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-red-900 md:dark:hover:bg-transparent dark:border-gray-700">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a data-target="panel-2"
+                            class="tab cursor-pointer text-lg font-semibold whitespace-nowrap text-gray-900 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-red-500 md:p-0 md:dark:hover:text-red-500 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-red-900 md:dark:hover:bg-transparent dark:border-gray-700">
+                            Predict
+                        </a>
+                    </li>
+                    <li>
+                        <a data-target="panel-3"
+                            class="tab cursor-pointer text-lg font-semibold whitespace-nowrap text-gray-900 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-red-500 md:p-0 md:dark:hover:text-red-500 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-red-900 md:dark:hover:bg-transparent dark:border-gray-700">
+                            Info
+                        </a>
+                    </li>
+                    <li>
+                        <a data-target="panel-4"
+                            class="tab cursor-pointer text-lg font-semibold whitespace-nowrap text-gray-900 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-red-500 md:p-0 md:dark:hover:text-red-500 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-red-900 md:dark:hover:bg-transparent dark:border-gray-700">
+                            Predict_Old
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <button id="theme-toggle" type="button"
+            class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+            <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z">
+                </path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                    fill-rule="evenodd" clip-rule="evenodd">
+                </path>
+            </svg>
+        </button>
+    </nav>
+    <main id="panels">
+        <section
+            class="panel-1 tab-content active content-between w-full max-w-2xl m-auto text-white rounded items-center justify-centerrelative body-font content-between">
+            <div class="bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 p-5 mt-12">
+                <blockquote class="text-2xl font-semibold italic text-center text-slate-900">
+                    <span
+                        class="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-pink-500 relative inline-block">
+                        Hello,
+                        <span id="user"
+                            class=" font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                            < email-id>
+                        </span>
+                    </span><br>
+                    Welcome to The
+                    <span
+                        class="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-pink-500 relative inline-block">
+                        <span
+                            class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                            Credit Card Fraud Detection System Dashboard,
+                        </span>
+                    </span><br>
+                    <span class="text-green-500">You are logged in successfully!!</span>
+                </blockquote>
+                <div class="flex items-center justify-center mt-4">
+                    <button
+                        class="mx-4 my-4 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
+                        <span onclick="logout()"
+                            class="tab relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            Logout
+                        </span>
+                    </button>
+                    <button
+                        class="mx-4 my-4 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
+                        <span data-target="panel-2"
+                            class="tab relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            Predict
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </section>
+        <section
+            class="panel-2 tab-content text-white content-between w-full max-w-none m-auto rounded items-center justify-centerrelative body-font content-between">
+            <div class="bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 p-5 mt-12">
+                <blockquote class="mb-6 text-2xl font-semibold italic text-center text-slate-900">
+                    <span
+                        class="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-pink-500 relative inline-block">
+                        <span
+                            class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                            Prediction Form
+                        </span>
+                    </span>
+                    <br>
+                    <fieldset for="Response" class="">Select the Output Response
+                        <br>
+                        <label class="mt-6 mb-6 mr-6 ml-6">
+                            <label for="JSON" class=" relative inline-flex items-center mt-4 mb-4  cursor-pointer">
+                                <input name="Response" type="radio" value="http://127.0.0.1:8000/predict" id="JSON"
+                                    class="JSON sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                </div>
+                                <span class="ml-3 text-sm font-medium text-black dark:text-gray-300"></span>
+                            </label>
+                            JSON Response
+                        </label>
+                        <label class="mt-6 mb-6 mr-6 ml-6">
+                            <label for="String" class="relative inline-flex items-center mt-4 mb-4  cursor-pointer">
+                                <input name="Response" type="radio" value="http://127.0.0.1:8000/api" id="String"
+                                    class="String sr-only peer" checked>
+                                <div
+                                    class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                </div>
+                                <span class="ml-3 text-sm font-medium text-black dark:text-gray-300"></span>
+                            </label>
+                            String Response (Default)
+                        </label>
+                    </fieldset>
+                </blockquote>
+                <form id="predict" class="predict absolute">
+                    <div class="grid gap-6 mb-6 lg:grid-cols-2">
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="time-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="0" max="2400" value="" step="1"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="Time" id="time" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="0" max="172792" value="" step="1"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="Time"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    Time
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v1-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V1" id="v1" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V1"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V1
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v2-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V2" id="v2" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V2"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V2
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v3-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V3" id="v3" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V3"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V3
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v4-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V4" id="v4" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V4"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V4
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v5-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V5" id="v5" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V5"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V5
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v6-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V6" id="v6" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V6"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V6
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v7-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V7" id="v7" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V7"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V7
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v8-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V8" id="v8" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V8"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V8
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v9-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V9" id="v9" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V9"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V9
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v10-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V10" id="v10" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V10"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V10
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v11-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V11" id="v11" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V11"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V11
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v12-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V12" id="v12" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V12"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V12
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v13-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V13" id="v13" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V13"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V13
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v14-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V14" id="v14" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V14"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V14
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v15-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V15" id="v15" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V15"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V15
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v16-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V16" id="v16" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V16"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V16
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v17-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V17" id="v17" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V17"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V17
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v18-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V18" id="v18" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V18"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V18
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v19-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V19" id="v19" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V19"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V19
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v20-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V20" id="v20" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V20"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V20
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v21-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V21" id="v21" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V21"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V21
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v22-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V22" id="v22" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V22"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V22
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v23-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V23" id="v23" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V23"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V23
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v24-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V24" id="v24" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V24"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V24
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v25-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V25" id="v25" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V25"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V25
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v26-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V26" id="v26" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V26"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V26
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v27-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V27" id="v" 27 oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V27"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V27
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="flex items-center justify-center">
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="v28-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="V28" id="v28" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="-9.9" max="9.999999999" value="" step="0.000000001"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="V29"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    V28
+                                </label>
+                            </div>
+                            <div class="relative z-0 mr-6 ml-6 mt-6 mb-6">
+                                <input id="ammount-slider" oninput="nextElementSibling.value = this.value" type="range"
+                                    min="1" max="45555.00" value="" step="01"
+                                    class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                                <input name="Amount" id="amount" oninput="previousElementSibling.value = this.value"
+                                    type="number" min="1" max="9999999" value="" step="01"
+                                    class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                    placeholder=" " required />
+                                <label for="Amount"
+                                    class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    Amount
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="flex items-center justify-center text-center mb-12">
+                        <button id="predictBtn" type="submit"
+                            class="bg-red-500 text-white hover:bg-red-700 active:bg-red-900 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+                            style="transition: all 0.15s ease 0s">
+                            Predict
+                        </button>
+                    </div>
+                    <br>
+                    <div id="result" class="hidden flex items-center justify-center text-3xl">
+                    </div>
+                </form>
+
+            </div>
+        </section>
+        <section
+            class="panel-3 tab-content content-between w-full max-w-none m-auto text-white rounded items-center justify-centerrelative body-font content-between">
+            <div class="bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 p-5 mt-12">
+                <blockquote class="mb-6 text-2xl font-semibold italic text-center text-slate-900">
+                    <span
+                        class="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-pink-500 relative inline-block">
+                        <span
+                            class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                            Information Page
+                        </span>
+                    </span>
+                    <br>
+                    <!-- <span>Get the Source Code @<a href="https://github.com/SC2003" rel="nofollow"
+                            class="text-blue-600 dark:text-blue-500 hover:underline">github.com/SC2003</a></span> -->
+                </blockquote>
+                <div id="accordion-collapse" data-accordion="collapse">
+                    <h2 id="accordion-collapse-heading-1">
+                        <button type="button"
+                            class="flex justify-between items-center p-5 w-full font-medium text-left text-gray-500 rounded-t-xl border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            data-accordion-target="#accordion-collapse-body-1" aria-expanded="true"
+                            aria-controls="accordion-collapse-body-1">
+                            <span>What is the Credit Card Fraud Detection System?</span>
+                            <svg data-accordion-icon class="w-6 h-6 rotate-180 shrink-0" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </h2>
+                    <div id="accordion-collapse-body-1" class="hidden" aria-labelledby="accordion-collapse-heading-1">
+                        <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+                            <p class="mb-2 text-gray-500 dark:text-gray-400">The Credit Card Fraud Detection System is a
+                                web-based application for detecting fraudulent transactions.</p>
+                            <p class="text-gray-500 dark:text-gray-400">This Project uses a <a
+                                    data-accordion-target="#accordion-collapse-body-5"
+                                    class="cursor-pointer text-blue-600 dark:text-blue-500 hover:underline">Machine
+                                    Learning</a> model to identify whether a transaction is fraudulent or not.</p>
+                        </div>
+                    </div>
+                    <h2 id="accordion-collapse-heading-2">
+                        <button type="button"
+                            class="flex justify-between items-center p-5 w-full font-medium text-left text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            data-accordion-target="#accordion-collapse-body-2" aria-expanded="false"
+                            aria-controls="accordion-collapse-body-2">
+                            <span>Backend</span>
+                            <svg data-accordion-icon class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </h2>
+                    <div id="accordion-collapse-body-2" class="hidden" aria-labelledby="accordion-collapse-heading-2">
+                        <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+                            <p class="mb-2 text-gray-500 dark:text-gray-400">This Project Uses the following Backend
+                                Technologies:</p>
+                            <ul class="pl-5 list-disc text-gray-500 dark:text-gray-400">
+                                <li><a data-accordion-target="#accordion-collapse-body-5"
+                                        class="cursor-pointer text-blue-600 dark:text-blue-500 hover:underline">Machine
+                                        Learning</a> model written in Python.</li>
+                                <li><a href="https://fastapi.tiangolo.com" rel="nofollow"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">FastAPI</a> to make a
+                                    API and connect it with the ML Model</li>
+                                <li><a href="https://heroku.com" rel="nofollow"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">Heroku</a> PaaS
+                                    (Platform as a Service) | used to host FastAPI and ML Model</li>
+                                <li><a href="https://firebase.google.com" rel="nofollow"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">Firebase</a> BaaS
+                                    (Backend as a Service) | used to host this Webpage & add Functionality like
+                                    Authentication and Database</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <h2 id="accordion-collapse-heading-3">
+                        <button type="button"
+                            class="flex justify-between items-center p-5 w-full font-medium text-left text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            data-accordion-target="#accordion-collapse-body-3" aria-expanded="false"
+                            aria-controls="accordion-collapse-body-3">
+                            <span>Frontend</span>
+                            <svg data-accordion-icon class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </h2>
+                    <div id="accordion-collapse-body-3" class="hidden" aria-labelledby="accordion-collapse-heading-2">
+                        <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+                            <p class="mb-2 text-gray-500 dark:text-gray-400">This Project Uses the following Frontend
+                                Technologies:</p>
+                            <ul class="pl-5 list-disc text-gray-500 dark:text-gray-400">
+                                <li><a href="https://firebase.google.com" rel="nofollow"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">Firebase</a> used to
+                                    host this Webpage</li>
+                                <li>Languages: HTML, CSS, Javascript and <a href="https://jquery.com/" rel="nofollow"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">jQuery</a> to fetch
+                                    API.</li>
+
+
+                                <li><a href="https://tailwindcss.com/" rel="nofollow"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">Tailwind CSS</a>
+                                    a CSS framework used to style this Webpage.
+                                </li>
+                                <li><a href="https://flowbite.com/"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">Flowbite</a>
+                                    Tailwind CSS component library used to add Day/Knight Mode.
+                                </li>
+
+
+                                <li><a href="https://heroicons.com/" rel="nofollow"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">Heroicons</a> SVG icons
+                                </li>
+                                <li><a href="https://heroku.com" rel="nofollow"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">Heroku</a> PaaS
+                                    (Platform as a Service) | used to host FastAPI and ML Model</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <h2 id="accordion-collapse-heading-4">
+                        <button type="button"
+                            class="flex justify-between items-center p-5 w-full font-medium text-left text-gray-500 border border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            data-accordion-target="#accordion-collapse-body-4" aria-expanded="false"
+                            aria-controls="accordion-collapse-body-4">
+                            <span>API</span>
+                            <svg data-accordion-icon class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </h2>
+                      <div id="accordion-collapse-body-4" class="hidden" aria-labelledby="accordion-collapse-heading-3">
+                        <div class="p-5 border border-t-0 border-gray-200 dark:border-gray-700">
+                            <!-- <p class="mb-2 text-gray-500 dark:text-gray-400">The API for this Project is hosted @<a
+                                    href="https://heroku.com" rel="nofollow"
+                                    class="text-blue-600 dark:text-blue-500 hover:underline">Heroku</a> Link: <a
+                                    href="https://ccfds.herokuapp.com/" rel="nofollow"
+                                    class="text-blue-600 dark:text-blue-500 hover:underline">https://ccfds.herokuapp.com/</a>.
+                            </p> -->
+                            <!-- <p class="mb-2 text-gray-500 dark:text-gray-400">There are two API Endpoints in CCFDS API .
+                            </p>
+                            <ul class="pl-5 list-disc text-gray-500 dark:text-gray-400">
+                                <li><a href="https://ccfds.herokuapp.com/api"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">https://ccfds.herokuapp.com/api</a>
+                                    to get a "String" Response</li>
+                                <li><a href="https://ccfds.herokuapp.com/predict" rel="nofollow"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">https://ccfds.herokuapp.com/predict</a>
+                                    to get a "JSON" Response</li>
+                            </ul>
+                            <p class="mb-2 text-gray-500 dark:text-gray-400">Play around with both here:</p>
+                            <ul class="pl-5 list-disc text-gray-500 dark:text-gray-400">
+                                <li><a href="https://ccfds.herokuapp.com/docs"
+                                        class="text-blue-600 dark:text-blue-500 hover:underline">https://ccfds.herokuapp.com/docs</a>
+                                </li>
+                            </ul> -->
+                        </div> 
+                    </div> 
+                    <h2 id="accordion-collapse-heading-5">
+                        <button type="button"
+                            class="flex justify-between items-center p-5 w-full font-medium text-left text-gray-500 border border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            data-accordion-target="#accordion-collapse-body-5" aria-expanded="false"
+                            aria-controls="accordion-collapse-body-5">
+                            <span>Training The ML Model</span>
+                            <svg data-accordion-icon class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </h2>
+                    <div id="accordion-collapse-body-5" class="hidden" aria-labelledby="accordion-collapse-heading-3">
+                        <div class="p-5 border border-t-0 border-gray-200 dark:border-gray-700">
+                            <p class="mb-2 text-gray-500 dark:text-gray-400">The Machine Learning Model is trained using
+                                the DATASET provided by <a
+                                    href="https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud" rel="nofollow"
+                                    class="text-blue-600 dark:text-blue-500 hover:underline">kaggle.com</a>.</p>
+                            <!-- <p class="mb-2 text-gray-500 dark:text-gray-400">With the help of this <a
+                                    href="https://youtu.be/NCgjcHLFNDg" rel="nofollow"
+                                    class="text-blue-600 dark:text-blue-500 hover:underline">Youtube Video</a>.</p> -->
+                        </div>
+                    </div>
+                    <h2 id="accordion-collapse-heading-6">
+                        <button type="button"
+                            class="flex justify-between items-center p-5 w-full font-medium text-left text-gray-500 border border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            data-accordion-target="#accordion-collapse-body-6" aria-expanded="false"
+                            aria-controls="accordion-collapse-body-6">
+                            <span>What are these arbitrary inputs like V1, V2....V28?</span>
+                            <svg data-accordion-icon class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </h2>
+                    <div id="accordion-collapse-body-6" class="hidden" aria-labelledby="accordion-collapse-heading-3">
+                        <div class="p-5 border border-t-0 border-gray-200 dark:border-gray-700">
+                            <p class="mb-2 text-gray-500 dark:text-gray-400">V1, V2 as described by <a
+                                    href="https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud" rel="nofollow"
+                                    class="text-blue-600 dark:text-blue-500 hover:underline">kaggle.com</a> the DataSet
+                                provider for this project are the numerical input variables which are the result of a
+                                PCA transformation.</p>
+                            <p class="mb-2 text-gray-500 dark:text-gray-400">i.e to keep the identity of people private,
+                                due to confidentiality issues, they cannot provide the original features and more
+                                background information about the data. Features V1, V2, … V28 are the principal
+                                components obtained with PCA.</p>
+                            <p class="mb-2 text-gray-500 dark:text-gray-400">Also note that the DataSet used in the
+                                training of the ML Model is highly unbalanced.</a>.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- <form>
+                    <div class="relative z-0 mt-6 mb-6">
+                        <input id="ammountslider" oninput="nextElementSibling.value = this.value" type="range"
+                            min="-9.999999" max="9.999999" value="4.9999995" step="0.0599"
+                            class="w-full float-left mr-20 mb-6 h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                        <input type="number" id="amount" oninput="previousElementSibling.value = this.value" min="1"
+                            max="9999999" value=""
+                            class="block w-full mb-6 py-2.5 px-0 text-xl text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" " />
+                        <label for="amount"
+                            class="absolute w-full text-xl mb-2 mt-5 text-gray-900 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                            Amount
+                        </label>
+                    </div>
+                    <div class="relative z-0 mt-6 mb-6">
+                        <label class="inline block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">V1:
+                            <input type="number" id="v1" min="-9.999999" max="9.999999" value="" step="0.0599"
+                                class="inline float-right block mb-2 text-sm font-medium text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                placeholder=" " oninput="nextElementSibling.value = this.value" />
+                            <input id="v1slider" oninput="previousElementSibling.value = this.value" type="range"
+                                min="-9.999999" max="9.999999" value="4.9999995" step="0.0599"
+                                class="mb-6 w-full h-1 bg-gray-500 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700">
+                        </label>
+                    </div>
+                </form> -->
+            </div>
+        </section>
+        <section
+            class="panel-4 tab-content text-white content-between w-full max-w-none m-auto rounded items-center justify-centerrelative body-font content-between">
+            <div class="bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 p-5 mt-12">
+                <blockquote class="mb-6 text-2xl font-semibold italic text-center text-slate-900">
+                    <span
+                        class="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-pink-500 relative inline-block">
+                        <span
+                            class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                            Prediction Form OLD VERSION!!!
+                        </span>
+                    </span>
+                    <br>
+                    <fieldset for="Response" class="">Select the Output Response
+                        <br>
+                        <label class="mt-6 mb-6 mr-6 ml-6">
+                            <label for="JSON1" class=" relative inline-flex items-center mt-4 mb-4 cursor-pointer">
+                                <input name="Response1" type="radio" value="http://127.0.0.1:8000/predict" id="JSON1"
+                                    class="JSON sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                </div>
+                                <span class="ml-3 text-sm font-medium text-black dark:text-gray-300"></span>
+                            </label>
+                            JSON Response
+                        </label>
+                        <label class="mt-6 mb-6 mr-6 ml-6">
+                            <label for="String1" class="relative inline-flex items-center mt-4 mb-4 cursor-pointer">
+                                <input name="Response1" type="radio" value="http://127.0.0.1:8000/api" id="String1"
+                                    class="String sr-only peer" checked>
+                                <div
+                                    class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                </div>
+                                <span class="ml-3 text-sm font-medium text-black dark:text-gray-300"></span>
+                            </label>
+                            String Response (Default)
+                        </label>
+                    </fieldset>
+                </blockquote>
+
+                <form id="predictV2" class="predict">
+
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="Time" placeholder="Time"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V1" placeholder="V1"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V2" placeholder="V2"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V3" placeholder="V3"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V4" placeholder="V4"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V5" placeholder="V5"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V6" placeholder="V6"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V7" placeholder="V7"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V8" placeholder="V8"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V9" placeholder="V9"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V10" placeholder="V10"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V11" placeholder="V11"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V12" placeholder="V12"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V13" placeholder="V13"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V14" placeholder="V14"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V15" placeholder="V15"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V16" placeholder="V16"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V17" placeholder="V17"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V18" placeholder="V18"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V19" placeholder="V19"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V20" placeholder="V20"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V21" placeholder="V21"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V22" placeholder="V22"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V23" placeholder="V23"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V24" placeholder="V24"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V25" placeholder="V25"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V26" placeholder="V26"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V27" placeholder="V27"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="V28" placeholder="V28"
+                        required="required" />
+                    <input class="bg-transparent dark:bg-transparent" type="text" name="Amount" placeholder="Amount"
+                        required="required" />
+                    <div class="text-center mt-6">
+                        <button
+                            class="bg-red-500 text-white hover:bg-red-700 active:bg-red-900 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+                            style="transition: all 0.15s ease 0s" type="submit" id="submit">
+                            Predict
+                        </button>
+                    </div>
+                </form>
+                <div id="result2" class="hidden flex items-center justify-center text-3xl "></div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

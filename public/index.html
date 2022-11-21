@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="https://fire-gym.web.app/src/img/logo.png" />
+    <title>Credit Card Fraud Detection System</title>
+    <script defer src="https://www.gstatic.com/firebasejs/9.8.2/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.8.2/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.7/dist/flowbite.min.css" />
+    <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js" defer></script>
+    <script src="./assets/firebaseConfig.js" defer></script>
+    <script src="./assets/firebaseFunctions.js" defer></script>
+    <script src="./assets/style.js" defer></script>
+</head>
+
+<body class="h-screen bg-gray-200 dark:bg-gray-900  text-gray-900 dark:text-gray-100">
+    <nav id="home" class="bg-gray-200 border-gray-100 border-gray-200 px-2 sm:px-4 py-2.5  dark:bg-gray-900">
+        <div class="tabs container mx-auto flex flex-wrap items-center justify-between">
+            <a href="/" class="flex">
+                <!--log here-->
+                <span class="self-center text-lg font-semibold whitespace-nowrap 
+                text-black dark:text-gray-200 dark:hover:text-red-900 hover:text-red-500">
+                    Credit Card Fraud Detection System
+                </span>
+            </a>
+            <div class="flex md:order-2">
+                <!-- Dark mode switcher -->
+                <button id="theme-toggle" type="button"
+                    class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                    <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z">
+                        </path>
+                    </svg>
+                    <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                            fill-rule="evenodd" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                <!-- Dark mode switcher end -->
+                <button data-collapse-toggle="mobile-menu-4" type="button"
+                    class="md:hidden text-gray-500 hover:bg-gray-100focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-lg text-sm p-2 inline-flex items-center dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                    aria-controls="mobile-menu-4" aria-expanded="false">
+                    <span class="sr-only">
+                        Open main menu
+                    </span>
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                            clip-rule="evenodd">
+                        </path>
+                    </svg>
+                    <svg class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div class="hidden md:flex justify-between items-center w-full md:w-auto md:order-1" id="mobile-menu-4">
+                <ul class="flex-col md:flex-row flex md:space-x-8 mt-4 md:mt-0 md:text-sm md:font-medium">
+                    <li>
+                        <a data-target="panel-1"
+                            class="tab cursor-pointer text-lg font-semibold whitespace-nowrap text-gray-900 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-red-500 md:p-0 md:dark:hover:text-red-500 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-red-900 md:dark:hover:bg-transparent dark:border-gray-700">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a data-target="panel-2"
+                            class="tab cursor-pointer text-lg font-semibold whitespace-nowrap text-gray-900 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-red-500 md:p-0 md:dark:hover:text-red-500 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-red-900 md:dark:hover:bg-transparent dark:border-gray-700">
+                            Register
+                        </a>
+                    </li>
+                    <li>
+                        <a data-target="panel-3"
+                            class="tab cursor-pointer text-lg font-semibold whitespace-nowrap text-gray-900 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-red-500 md:p-0 md:dark:hover:text-red-500 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-red-900 md:dark:hover:bg-transparent dark:border-gray-700">
+                            Login
+                        </a>
+                    </li>
+                    <!-- <li>
+                        <a data-target="panel-4"
+                            class="tab cursor-pointer text-lg font-semibold whitespace-nowrap text-gray-900 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-red-500 md:p-0 md:dark:hover:text-red-500 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-red-900 md:dark:hover:bg-transparent dark:border-gray-700">
+                            Contact
+                        </a>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
+        <button id="theme-toggle" type="button"
+            class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+            <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z">
+                </path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                    fill-rule="evenodd" clip-rule="evenodd">
+                </path>
+            </svg>
+        </button>
+    </nav>
+    <section class="mt-2">
+        <div class="inline-block flex items-center justify-center">
+            <span id="success-alert"
+                class="hidden inline-block p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800 font-medium"
+                role="alert">
+            </span>
+            <span id="error-alert"
+                class="hidden inline-block p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800 font-medium"
+                role="alert">
+            </span>
+        </div>
+    </section>
+    <main id="panels">
+        <section
+            class="panel-1 tab-content active content-between w-full max-w-2xl m-auto text-white rounded items-center justify-centerrelative body-font content-between">
+            <div id="root" class="bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200 p-5 mt-12">
+                <blockquote class="text-2xl font-semibold italic text-center text-slate-900">
+                    Welcome to The
+                    <span
+                        class="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-pink-500 relative inline-block">
+                        <span
+                            class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                            Credit Card Fraud Detection System.
+                        </span>
+                    </span><br>
+                    <span> You must be logged in to use The Fraud-Detection-System.
+                    </span>
+                   <span>
+                    Please create an account or log on to an existing account.
+                   </span>
+                </blockquote>
+
+                <div class="flex items-center justify-center mt-4">
+                    <!-- <button data-target="panel-2"
+                        class="tab cursor-pointer bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 mb-6 rounded">
+                        Create Account
+                    </button> -->
+                    <button
+                        class="mx-4 my-4 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
+                        <span data-target="panel-2"
+                            class="tab relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            Create Account
+                        </span>
+                    </button>
+                    <!-- <button data-target="panel-3"
+                        class="tab cursor-pointer bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 mb-6 rounded">
+                        Login
+                    </button> -->
+                    <button
+                        class="mx-4 my-4 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
+                        <span data-target="panel-3"
+                            class="tab relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            Login
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </section>
+        <section
+            class="panel-2 tab-content content-between w-full max-w-xs m-auto text-white rounded items-center justify-centerrelative body-font content-between">
+            <div class="w-full max-w-xs m-auto rounded p-5">
+                <form id="auth">
+                    <div class="relative">
+                        <label class="block mb-2 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200"
+                            for="username">Full Name</label>
+                        <input type="text" name="name" id="name"
+                            class="w-full p-2 mb-6 bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-white bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none leading-8 transition-colors duration-200 ease-in-out"
+                            required>
+                    </div>
+                    <div class="relative">
+                        <label class="block mb-2 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200"
+                            for="password">Email</label>
+                        <input type="email" name="email" id="email"
+                            class="w-full p-2 mb-6 bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-white bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none leading-8 transition-colors duration-200 ease-in-out"
+                            required>
+                    </div>
+                    <div class="relative">
+                        <label class="block mb-2 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200"
+                            for="password">Password</label>
+                        <input type="password" name="password" id="password"
+                            class="w-full p-2 mb-6 bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-white bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none leading-8 transition-colors duration-200 ease-in-out"
+                            required>
+                    </div>
+
+                    <div class="relative">
+                        <button id="signUpBtn" type="submit"
+                            class="w-full bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 mb-6 rounded">Register</button>
+                    </div>
+                </form>
+                <div>
+
+                    <a id="forgetPassBtn"
+                        class="cursor-pointer text-black dark:text-white hover:text-red-700 text-sm float-left dark:hover:text-red-900">
+                        Forgot Password?</a>
+                    <a data-target="panel-3"
+                        class="tab cursor-pointer text-black dark:text-white hover:text-red-700 text-sm float-right dark:hover:text-red-900">
+                        Have Account? Login</a>
+                </div>
+            </div>
+        </section>
+        <section
+            class="panel-3 tab-content content-between w-full max-w-xs m-auto text-white rounded items-center justify-centerrelative body-font content-between">
+
+            <div class="w-full max-w-xs m-auto rounded p-5">
+                <form id="auth2">
+                    <div class="relative">
+                        <label class="block mb-2 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200"
+                            for="password">Email</label>
+                        <input type="email" name="email" id="email2"
+                            class="w-full p-2 mb-6 bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-white bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none leading-8 transition-colors duration-200 ease-in-out"
+                            required>
+                    </div>
+                    <div class="relative">
+                        <label class="block mb-2 bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-200"
+                            for="password">Password</label>
+                        <input type="password" name="password" id="password2"
+                            class="w-full p-2 mb-6 bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-white bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none leading-8 transition-colors duration-200 ease-in-out"
+                            required>
+                    </div>
+
+                    <div class="relative">
+                        <button id="signInBtn" type="submit"
+                            class="w-full bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 mb-6 rounded">
+                            Login
+                        </button>
+                    </div>
+                </form>
+                <div>
+                    <a id="forgetPassBtn2"
+                        class="cursor-pointer text-black dark:text-white hover:text-red-700 text-sm float-left dark:hover:text-red-900">
+                        Forgot Password?</a>
+                    <a data-target="panel-2"
+                        class="tab cursor-pointer text-black dark:text-white hover:text-red-700 text-sm float-right dark:hover:text-red-900">
+                        Create Account</a>
+                </div>
+            </div>
+        </section>
+        <!-- <section
+            class="panel-4 tab-content content-between w-full max-w-xs m-auto text-white rounded items-center justify-centerrelative body-font content-between">
+            <div class="w-full max-w-xs m-auto rounded p-5">
+                Imagine A Contact "Form" here
+            </div>
+        </section> -->
+    </main>
+</body>
+
+</html>
